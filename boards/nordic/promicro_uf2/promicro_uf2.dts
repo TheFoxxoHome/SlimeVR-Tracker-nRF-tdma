@@ -107,9 +107,9 @@
 	battery-divider {
 		compatible = "voltage-divider";
 		status = "okay";
-		io-channels = <&adc 4>;
-		output-ohms = <10000000>;
-		full-ohms = <20000000>;
+		io-channels = <&adc 12>;
+		output-ohms = <1>;
+		full-ohms = <5>;
 	};
 
 	zephyr,user {
