@@ -110,6 +110,7 @@
 		io-channels = <&adc 12>; // Measure VDDHDIV5
 		output-ohms = <1>;
 		full-ohms = <5>;
+        power-gpios = <&gpio0 27 GPIO_ACTIVE_HIGH>;
 	};
 
 	zephyr,user {
@@ -119,7 +120,6 @@
 		led-gpios = <&gpio0 15 GPIO_ACTIVE_HIGH>;
 		gnd-gpios = <&gpio0 20 GPIO_OPEN_DRAIN>;
 		clk-gpios = <&gpio0 12 GPIO_OPEN_DRAIN>;
-		adc-en-gpios = <&gpio0 27 GPIO_ACTIVE_HIGH>;
 	};
 
 };
