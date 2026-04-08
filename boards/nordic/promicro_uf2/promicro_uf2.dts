@@ -5,21 +5,6 @@
 #include <nordic/nrf52840_qiaa.dtsi>
 
 &pinctrl {
-	i2c0_default: i2c0_default {
-		group1 {
-			psels = <NRF_PSEL(TWIM_SDA, 0, 24)>, <NRF_PSEL(TWIM_SCL, 0, 22)>;
-			bias-disable;
-		};
-	};
-
-	i2c0_sleep: i2c0_sleep {
-		group1 {
-			psels = <NRF_PSEL(TWIM_SDA, 0, 24)>, <NRF_PSEL(TWIM_SCL, 0, 22)>;
-			bias-disable;
-			low-power-enable;
-		};
-	};
-
 	pwm0_default: pwm0_default {
 		group1 {
 			psels = <NRF_PSEL(PWM_OUT0, 0, 15)>;
@@ -34,18 +19,8 @@
 		};
 	};
 
-	pwm1_default: pwm1_default {
-		group1 {
-			psels = <NRF_PIN_DISCONNECTED>;
-		};
-	};
-
-	pwm1_sleep: pwm1_sleep {
-		group1 {
-			psels = <NRF_PIN_DISCONNECTED>;
-			low-power-enable;
-		};
-	};
+	pwm1_default: pwm1_default { group1 { psels = <NRF_PIN_DISCONNECTED>; }; };
+	pwm1_sleep: pwm1_sleep { group1 { psels = <NRF_PIN_DISCONNECTED>; low-power-enable; }; };
 
 	spi3_default: spi3_default {
 		group1 {
@@ -95,7 +70,6 @@
 		sw0 = &button0;
 		pwm-led0 = &pwm_led0;
 		imu = &imu_spi;
-		mag = &mag;
 	};
 
 	pwmclock: pwmclock {
@@ -107,9 +81,9 @@
 	battery-divider {
 		compatible = "voltage-divider";
 		status = "okay";
-		io-channels = <&adc 12>;
-		output-ohms = <1>;
-		full-ohms = <5>;
+		io-channels = <&adc 4>;
+		output-ohms = <10000000>;
+		full-ohms = <20000000>;
 	};
 
 	zephyr,user {
@@ -124,46 +98,14 @@
 	};
 };
 
-&reg0 {
-	status = "okay";
-};
+&reg0 { status = "okay"; };
+&reg1 { regulator-initial-mode = <NRF5X_REG_MODE_DCDC>; };
+&adc { status = "okay"; };
+&gpiote { status = "okay"; };
+&gpio0 { status = "okay"; };
+&gpio1 { status = "okay"; };
 
-&reg1 {
-	regulator-initial-mode = <NRF5X_REG_MODE_DCDC>;
-};
-
-&adc {
-	status = "okay";
-};
-
-&gpiote {
-	status = "okay";
-};
-
-&gpio0 {
-	status = "okay";
-};
-
-&gpio1 {
-	status = "okay";
-};
-
-&i2c0 {
-	compatible = "nordic,nrf-twim";
-	status = "okay";
-	zephyr,concat-buf-size = <1023>;
-	zephyr,flash-buf-max-size = <1023>;
-	clock-frequency = <I2C_BITRATE_FAST>;
-	pinctrl-0 = <&i2c0_default>;
-	pinctrl-1 = <&i2c0_sleep>;
-	pinctrl-names = "default", "sleep";
-
-	mag: mag@0 {
-		compatible = "vnd,i2c-device"; 
-		label = "mag";
-		reg = <0>;
-	};
-};
+&i2c0 { status = "disabled"; };
 
 &pwm0 {
 	status = "okay";
@@ -187,13 +129,8 @@ zephyr_udc0: &usbd {
 	};
 };
 
-&cryptocell {
-	status = "disabled";
-};
-
-&nfct {
-	status = "disabled";
-};
+&cryptocell { status = "disabled"; };
+&nfct { status = "disabled"; };
 
 &spi3 {
 	compatible = "nordic,nrf-spim";
