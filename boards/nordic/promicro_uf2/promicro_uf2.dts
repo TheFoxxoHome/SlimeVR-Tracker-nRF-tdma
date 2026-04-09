@@ -107,10 +107,9 @@
 	battery-divider {
 		compatible = "voltage-divider";
 		status = "okay";
-		io-channels = <&adc 2>; // Measure VDDHDIV5
+		io-channels = <&adc 12>; // Measure VDDHDIV5
 		output-ohms = <1>;
 		full-ohms = <5>;
-        power-gpios = <&gpio0 27 GPIO_ACTIVE_HIGH>;
 	};
 
 	zephyr,user {
@@ -120,6 +119,7 @@
 		led-gpios = <&gpio0 15 GPIO_ACTIVE_HIGH>;
 		gnd-gpios = <&gpio0 20 GPIO_OPEN_DRAIN>;
 		clk-gpios = <&gpio0 12 GPIO_OPEN_DRAIN>;
+		adc-en-gpios = <&gpio0 27 GPIO_ACTIVE_HIGH>;
 	};
 
 };
@@ -205,7 +205,7 @@ zephyr_udc0: &usbd {
 &spi3 {
 	compatible = "nordic,nrf-spim";
 	status = "okay";
-	max-frequency = <DT_FREQ_M(8)>;
+	max-frequency = <DT_FREQ_M(24)>;
 	pinctrl-0 = <&spi3_default>;
 	pinctrl-1 = <&spi3_sleep>;
 	pinctrl-names = "default", "sleep";
@@ -213,7 +213,7 @@ zephyr_udc0: &usbd {
 
 	imu_spi: imu_spi@0 {
 		compatible = "vnd,spi-device";
-		spi-max-frequency = <DT_FREQ_M(8)>;
+		spi-max-frequency = <DT_FREQ_M(24)>;
 		label = "imu-spi";
 		reg = <0>;
 	};
