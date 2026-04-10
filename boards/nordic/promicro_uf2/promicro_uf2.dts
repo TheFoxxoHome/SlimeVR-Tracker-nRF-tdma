@@ -113,7 +113,12 @@
 		full-ohms = <20>;
         power-gpios = <&gpio0 27 GPIO_ACTIVE_HIGH>;
 	};
-
+vbatt_turn_on: regulator-vbatt-turn-on {
+		compatible = "regulator-fixed";
+		regulator-name = "vbatt_turn_on";
+		enable-gpios = <&gpio0 27 GPIO_ACTIVE_HIGH>;
+		regulator-always-on;
+	};
 	zephyr,user {
 		pwr-gpios = <&gpio0 5 GPIO_ACTIVE_HIGH>;
 		vcc-gpios = <&gpio0 5 GPIO_ACTIVE_HIGH>;
