@@ -77,15 +77,20 @@
 		#clock-cells = <1>;
 		pwms = <&pwm1 0 PWM_HZ(32768) PWM_POLARITY_NORMAL>;
 	};
-
+{
+    /* Создаем виртуальный переключатель, который включится сразу при старте */
+    vbatt_switch: vbatt-switch {
+        compatible = "regulator-fixed";
+        regulator-name = "vbatt_switch";
+        enable-gpios = <&gpio0 27 GPIO_ACTIVE_HIGH>;
+        regulator-always-on;
+    };
 	battery-divider {
 		compatible = "voltage-divider";
 		status = "okay";
 		io-channels = <&adc 4>;
 		output-ohms = <10000000>;
-		full-ohms = <20000000>;
-		/* Вот он, тот самый ключ TPS22916 на 27 пине, ВНУТРИ блока батареи! */
-		power-gpios = <&gpio0 27 GPIO_ACTIVE_HIGH>;
+		full-ohms = <20000000>;	
 	};
 
 	zephyr,user {
