@@ -3,7 +3,7 @@
 
 /dts-v1/;
 #include <nordic/nrf52840_qiaa.dtsi>
-#include <zephyr/dt-bindings/adc/adc.h> // Required for ADC macros
+#include <zephyr/dt-bindings/adc/adc.h>
 
 &pinctrl {
 	i2c0_default: i2c0_default {
@@ -37,8 +37,6 @@
 
 	pwm1_default: pwm1_default {
 		group1 {
-            // WARNING: If you want pwmclock to drive an external device, 
-            // replace NRF_PIN_DISCONNECTED with an actual pin (e.g., NRF_PSEL(PWM_OUT0, 1, 2))
 			psels = <NRF_PIN_DISCONNECTED>;
 		};
 	};
@@ -108,20 +106,21 @@
 	battery-divider {
 		compatible = "voltage-divider";
 		status = "okay";
-		io-channels = <&adc 4>; // Updated to point to explicitly defined channel 0 below
+		io-channels = <&adc 4>; 
 		output-ohms = <10>;
 		full-ohms = <20>;
-        power-gpios = <&gpio0 27 GPIO_ACTIVE_HIGH>;
+		power-gpios = <&gpio0 27 GPIO_ACTIVE_HIGH>;
 	};
 
 	zephyr,user {
 		pwr-gpios = <&gpio0 5 GPIO_ACTIVE_HIGH>;
 		vcc-gpios = <&gpio0 5 GPIO_ACTIVE_HIGH>;
-		int0-gpios = <&gpio0 26 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
-        // Removed led-gpios = <&gpio0 15 ...> to prevent collision with pwm0
+		
+		/* Изменен пин прерывания на 002 согласно схеме */
+		int0-gpios = <&gpio0 2 GPIO_ACTIVE_HIGH>; 
+		
 		gnd-gpios = <&gpio0 20 GPIO_OPEN_DRAIN>;
 		clk-gpios = <&gpio0 12 GPIO_OPEN_DRAIN>;
-		
 	};
 };
 
@@ -159,17 +158,17 @@
 	pinctrl-1 = <&i2c0_sleep>;
 	pinctrl-names = "default", "sleep";
 
-    // Fixed duplicate node addresses. Update 0x68 and 0x1E to actual hardware addresses.
-	imu: imu@68 { 
+	/* Обновлены адреса под LSM6DSV и QMC6309 */
+	imu: imu@6a { 
 		compatible = "i2c-device";
 		label = "imu";
-		reg = <0x68>;
+		reg = <0x6A>;
 	};
 
-	mag: mag@1e {
+	mag: mag@1c {
 		compatible = "i2c-device";
 		label = "mag";
-		reg = <0x1E>;
+		reg = <0x1C>;
 	};
 };
 
