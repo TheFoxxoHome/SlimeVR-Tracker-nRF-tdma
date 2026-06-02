@@ -1,4 +1,3 @@
-
 // Copyright (c) 2024 Nordic Semiconductor ASA
 // SPDX-License-Identifier: Apache-2.0
 
@@ -9,14 +8,14 @@
 &pinctrl {
 	i2c0_default: i2c0_default {
 		group1 {
-			psels = <NRF_PSEL(TWIM_SDA, 0, 6)>, <NRF_PSEL(TWIM_SCL, 0, 8)>;
+			psels = <NRF_PSEL(TWIM_SDA, 0, 24)>, <NRF_PSEL(TWIM_SCL, 0, 22)>;
 			bias-disable;
 		};
 	};
 
 	i2c0_sleep: i2c0_sleep {
 		group1 {
-			psels = <NRF_PSEL(TWIM_SDA, 0, 6)>, <NRF_PSEL(TWIM_SCL, 0, 8)>;
+			psels = <NRF_PSEL(TWIM_SDA, 0, 24)>, <NRF_PSEL(TWIM_SCL, 0, 22)>;
 			bias-disable;
 			low-power-enable;
 		};
@@ -51,17 +50,17 @@
 
 	spi3_default: spi3_default {
 		group1 {
-			psels = <NRF_PSEL(SPIM_MISO, 0, 24)>,
-					<NRF_PSEL(SPIM_MOSI, 0, 6)>,
-					<NRF_PSEL(SPIM_SCK, 0, 8)>;
+			psels = <NRF_PSEL(SPIM_MISO, 1, 9)>,
+					<NRF_PSEL(SPIM_MOSI, 1, 8)>,
+					<NRF_PSEL(SPIM_SCK, 0, 7)>;
 		};
 	};
 
 	spi3_sleep: spi3_sleep {
 		group1 {
-			psels = <NRF_PSEL(SPIM_MISO, 0, 24)>,
-					<NRF_PSEL(SPIM_MOSI, 0, 6)>,
-					<NRF_PSEL(SPIM_SCK, 0, 8)>;
+			psels = <NRF_PSEL(SPIM_MISO, 1, 9)>,
+					<NRF_PSEL(SPIM_MOSI, 1, 8)>,
+					<NRF_PSEL(SPIM_SCK, 0, 7)>;
 			low-power-enable;
 		};
 	};
@@ -89,13 +88,13 @@
 	buttons {
 		compatible = "gpio-keys";
 		button0: button_0 {
-			gpios = <&gpio1 0 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+			gpios = <&gpio0 6 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
 			label = "Push button switch 0";
 		};
 	};
 
 	aliases {
-		// sw0 = &button0; // Uncomment to Enable SW0
+		sw0 = &button0; // Uncomment to Enable SW0
 		pwm-led0 = &pwm_led0;
 	};
 
@@ -114,10 +113,13 @@
 	};
 
 	zephyr,user {
-		int0-gpios = <&gpio0 17 0>;
-		led-gpios = <&gpio0 15 GPIO_OPEN_SOURCE>;
-		// clk-gpios = <&gpio0 20 GPIO_OPEN_DRAIN>; // Uncomment and set to correct pin if using an external clock (crystal oscillator)
-		vcc-gpios = <&gpio0 31 0>;
+		pwr-gpios = <&gpio0 5 GPIO_ACTIVE_HIGH>;
+		vcc-gpios = <&gpio0 5 GPIO_ACTIVE_HIGH>;
+		int0-gpios = <&gpio0 26 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+		led-gpios = <&gpio0 15 GPIO_ACTIVE_HIGH>;
+		gnd-gpios = <&gpio0 20 GPIO_OPEN_DRAIN>;
+		clk-gpios = <&gpio0 12 GPIO_OPEN_DRAIN>;
+		adc-en-gpios = <&gpio0 27 GPIO_ACTIVE_HIGH>;
 	};
 
 };
@@ -207,7 +209,7 @@ zephyr_udc0: &usbd {
 	pinctrl-0 = <&spi3_default>;
 	pinctrl-1 = <&spi3_sleep>;
 	pinctrl-names = "default", "sleep";
-	cs-gpios = <&gpio0 22 GPIO_ACTIVE_LOW>;
+	cs-gpios = <&gpio0 4 GPIO_ACTIVE_LOW>;
 
 	imu_spi: imu_spi@0 {
 		compatible = "vnd,spi-device";
