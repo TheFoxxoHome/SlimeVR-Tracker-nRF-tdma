@@ -10,6 +10,12 @@
 
 LOG_MODULE_REGISTER(led, LOG_LEVEL_INF);
 
+#if CONFIG_PM_DEVICE
+#define PM_DEVICE_ACTION_RUN(device, action) pm_device_action_run((device), (action))
+#else
+#define PM_DEVICE_ACTION_RUN(device, action) 0
+#endif
+
 static void led_thread(void);
 K_THREAD_DEFINE(led_thread_id, 512, led_thread, NULL, NULL, NULL, LED_THREAD_PRIORITY, 0, 0);
 
@@ -134,16 +140,16 @@ static void led_suspend(void)
 {
 	LOG_DBG("led_suspend");
 #ifdef LED_STRIP_EXISTS
-	pm_device_action_run(strip, PM_DEVICE_ACTION_SUSPEND);
+	PM_DEVICE_ACTION_RUN(strip, PM_DEVICE_ACTION_SUSPEND);
 #endif
 #ifdef PWM_LED_EXISTS
-	pm_device_action_run(pwm_led.dev, PM_DEVICE_ACTION_SUSPEND);
+	PM_DEVICE_ACTION_RUN(pwm_led.dev, PM_DEVICE_ACTION_SUSPEND);
 #endif
 #ifdef PWM_LED1_EXISTS
-	pm_device_action_run(pwm_led1.dev, PM_DEVICE_ACTION_SUSPEND);
+	PM_DEVICE_ACTION_RUN(pwm_led1.dev, PM_DEVICE_ACTION_SUSPEND);
 #endif
 #ifdef PWM_LED2_EXISTS
-	pm_device_action_run(pwm_led2.dev, PM_DEVICE_ACTION_SUSPEND);
+	PM_DEVICE_ACTION_RUN(pwm_led2.dev, PM_DEVICE_ACTION_SUSPEND);
 #endif
 	led_pin_reset();
 	// disable power
@@ -162,16 +168,16 @@ static void led_resume(void)
 	gpio_pin_set_dt(&led_en, 1);
 #endif
 #ifdef LED_STRIP_EXISTS
-	pm_device_action_run(strip, PM_DEVICE_ACTION_RESUME);
+	PM_DEVICE_ACTION_RUN(strip, PM_DEVICE_ACTION_RESUME);
 #endif
 #ifdef PWM_LED_EXISTS
-	pm_device_action_run(pwm_led.dev, PM_DEVICE_ACTION_RESUME);
+	PM_DEVICE_ACTION_RUN(pwm_led.dev, PM_DEVICE_ACTION_RESUME);
 #endif
 #ifdef PWM_LED1_EXISTS
-	pm_device_action_run(pwm_led1.dev, PM_DEVICE_ACTION_RESUME);
+	PM_DEVICE_ACTION_RUN(pwm_led1.dev, PM_DEVICE_ACTION_RESUME);
 #endif
 #ifdef PWM_LED2_EXISTS
-	pm_device_action_run(pwm_led2.dev, PM_DEVICE_ACTION_RESUME);
+	PM_DEVICE_ACTION_RUN(pwm_led2.dev, PM_DEVICE_ACTION_RESUME);
 #endif
 	led_pin_init();
 }
