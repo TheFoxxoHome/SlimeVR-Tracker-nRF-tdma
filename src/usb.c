@@ -16,6 +16,12 @@
 
 static bool configured;
 
+#if CONFIG_PM_DEVICE
+#define PM_DEVICE_ACTION_RUN(device, action) pm_device_action_run((device), (action))
+#else
+#define PM_DEVICE_ACTION_RUN(device, action) 0
+#endif
+
 LOG_MODULE_REGISTER(usb, LOG_LEVEL_INF);
 
 static void usb_init_thread(void);
@@ -33,7 +39,7 @@ static void status_cb(enum usb_dc_status_code status, const uint8_t *param)
 		break;
 	case USB_DC_CONNECTED:
 		set_status(SYS_STATUS_USB_CONNECTED, true);
-		pm_device_action_run(cons, PM_DEVICE_ACTION_RESUME);
+		PM_DEVICE_ACTION_RUN(cons, PM_DEVICE_ACTION_RESUME);
 		log_backend_enable(backend, backend->cb->ctx, CONFIG_LOG_MAX_LEVEL);
 		console_thread_create();
 		if (use_hid)
@@ -61,7 +67,7 @@ static void status_cb(enum usb_dc_status_code status, const uint8_t *param)
 			hid_thread_abort();
 		console_thread_abort();
 		log_backend_disable(backend);
-		pm_device_action_run(cons, PM_DEVICE_ACTION_SUSPEND);
+		PM_DEVICE_ACTION_RUN(cons, PM_DEVICE_ACTION_SUSPEND);
 		break;
 	case USB_DC_SOF:
 		break;

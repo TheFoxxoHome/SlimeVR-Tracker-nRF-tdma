@@ -16,6 +16,12 @@
 
 #include "power.h"
 
+#if CONFIG_PM_DEVICE
+#define PM_DEVICE_ACTION_RUN(device, action) pm_device_action_run((device), (action))
+#else
+#define PM_DEVICE_ACTION_RUN(device, action) 0
+#endif
+
 #define DFU_DBL_RESET_MEM 0x20007F7C
 #define DFU_DBL_RESET_APP 0x4ee5677e
 
@@ -113,19 +119,19 @@ void sys_interface_suspend(void)
 {
 #if DT_NODE_HAS_STATUS_OKAY(DT_PARENT(DT_NODELABEL(imu_spi)))
 	const struct device *const pm_spi_imu = DEVICE_DT_GET(DT_PARENT(DT_NODELABEL(imu_spi)));
-	pm_device_action_run(pm_spi_imu, PM_DEVICE_ACTION_SUSPEND);
+	PM_DEVICE_ACTION_RUN(pm_spi_imu, PM_DEVICE_ACTION_SUSPEND);
 #endif
 #if DT_NODE_HAS_STATUS_OKAY(DT_PARENT(DT_NODELABEL(imu)))
 	const struct device *const pm_i2c_imu = DEVICE_DT_GET(DT_PARENT(DT_NODELABEL(imu)));
-	pm_device_action_run(pm_i2c_imu, PM_DEVICE_ACTION_SUSPEND);
+	PM_DEVICE_ACTION_RUN(pm_i2c_imu, PM_DEVICE_ACTION_SUSPEND);
 #endif
 #if DT_NODE_HAS_STATUS_OKAY(DT_PARENT(DT_NODELABEL(mag_spi)))
 	const struct device *const pm_spi_mag = DEVICE_DT_GET(DT_PARENT(DT_NODELABEL(mag_spi)));
-	pm_device_action_run(pm_spi_mag, PM_DEVICE_ACTION_SUSPEND);
+	PM_DEVICE_ACTION_RUN(pm_spi_mag, PM_DEVICE_ACTION_SUSPEND);
 #endif
 #if DT_NODE_HAS_STATUS_OKAY(DT_PARENT(DT_NODELABEL(mag)))
 	const struct device *const pm_i2c_mag = DEVICE_DT_GET(DT_PARENT(DT_NODELABEL(mag)));
-	pm_device_action_run(pm_i2c_mag, PM_DEVICE_ACTION_SUSPEND);
+	PM_DEVICE_ACTION_RUN(pm_i2c_mag, PM_DEVICE_ACTION_SUSPEND);
 #endif
 }
 
@@ -133,19 +139,19 @@ void sys_interface_resume(void)
 {
 #if DT_NODE_HAS_STATUS_OKAY(DT_PARENT(DT_NODELABEL(imu_spi)))
 	const struct device *const pm_spi_imu = DEVICE_DT_GET(DT_PARENT(DT_NODELABEL(imu_spi)));
-	pm_device_action_run(pm_spi_imu, PM_DEVICE_ACTION_RESUME);
+	PM_DEVICE_ACTION_RUN(pm_spi_imu, PM_DEVICE_ACTION_RESUME);
 #endif
 #if DT_NODE_HAS_STATUS_OKAY(DT_PARENT(DT_NODELABEL(imu)))
 	const struct device *const pm_i2c_imu = DEVICE_DT_GET(DT_PARENT(DT_NODELABEL(imu)));
-	pm_device_action_run(pm_i2c_imu, PM_DEVICE_ACTION_RESUME);
+	PM_DEVICE_ACTION_RUN(pm_i2c_imu, PM_DEVICE_ACTION_RESUME);
 #endif
 #if DT_NODE_HAS_STATUS_OKAY(DT_PARENT(DT_NODELABEL(mag_spi)))
 	const struct device *const pm_spi_mag = DEVICE_DT_GET(DT_PARENT(DT_NODELABEL(mag_spi)));
-	pm_device_action_run(pm_spi_mag, PM_DEVICE_ACTION_RESUME);
+	PM_DEVICE_ACTION_RUN(pm_spi_mag, PM_DEVICE_ACTION_RESUME);
 #endif
 #if DT_NODE_HAS_STATUS_OKAY(DT_PARENT(DT_NODELABEL(mag)))
 	const struct device *const pm_i2c_mag = DEVICE_DT_GET(DT_PARENT(DT_NODELABEL(mag)));
-	pm_device_action_run(pm_i2c_mag, PM_DEVICE_ACTION_RESUME);
+	PM_DEVICE_ACTION_RUN(pm_i2c_mag, PM_DEVICE_ACTION_RESUME);
 #endif
 }
 
@@ -498,7 +504,7 @@ static void power_thread(void)
 	{
 #if DT_NODE_HAS_STATUS_OKAY(DT_NODELABEL(uart0))
 		const struct device *const uart = DEVICE_DT_GET(DT_NODELABEL(uart0));
-		pm_device_action_run(uart, PM_DEVICE_ACTION_SUSPEND);
+		PM_DEVICE_ACTION_RUN(uart, PM_DEVICE_ACTION_SUSPEND);
 #endif
 		int requested = sys_power_state_request(0);
 		switch (requested)
